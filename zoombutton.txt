@@ -1,0 +1,199 @@
+Add a GAMEPLAY ZOOM control to the existing Splendor UI.
+
+Do NOT use browser zoom.
+Do NOT use CSS transform: scale() on the whole page.
+Do NOT change game logic.
+
+Add a compact zoom control in the top-right toolbar, near Settings:
+
+[-] 100% [+]
+
+Allow zoom levels:
+
+85%
+90%
+95%
+100%
+105%
+110%
+115%
+120%
+
+Default:
+100%
+
+Behavior:
+
+The zoom control should resize only the gameplay area:
+
+- development cards
+- Noble cards
+- Gem Bank
+- opponent distance from the board
+- gameplay spacing
+- local gameplay HUD where appropriate
+
+Do NOT scale:
+
+- browser-like navigation
+- top toolbar icons
+- settings modal
+- rules modal
+- dialogs
+- unrelated UI
+
+Implement zoom using CSS variables, NOT transform: scale().
+
+Example:
+
+:root {
+  --game-zoom: 1;
+}
+
+Use the zoom factor inside responsive size calculations.
+
+Example concept:
+
+.card {
+  width: clamp(
+    var(--card-min),
+    calc(var(--card-fluid) * var(--game-zoom)),
+    var(--card-max)
+  );
+}
+
+.noble {
+  width: clamp(
+    var(--noble-min),
+    calc(var(--noble-fluid) * var(--game-zoom)),
+    var(--noble-max)
+  );
+}
+
+Also adjust responsive gaps slightly using the same zoom factor.
+
+IMPORTANT:
+
+Zoom must still respect viewport boundaries.
+
+If the selected zoom level would cause overflow:
+
+automatically clamp the effective zoom to the maximum safe value for the current viewport.
+
+For example:
+
+User selects 120%
+
+On 2560×1440:
+effective zoom may remain 120%.
+
+On 1366×768:
+effective zoom may automatically clamp to 103–108% if necessary.
+
+Never allow:
+- vertical page scrolling
+- card overlap
+- clipped Nobles
+- hidden Gem Bank
+- hidden player HUD
+
+Show the user's selected zoom level in the UI, but internally allow responsive safety clamping.
+
+Example:
+
+User setting:
+120%
+
+Effective layout:
+112%
+
+The UI does not need to expose the internal effective value unless useful.
+
+BUTTON INTERACTION
+
+Minus:
+decrease zoom by 5%.
+
+Plus:
+increase zoom by 5%.
+
+Clicking the percentage value resets to 100%.
+
+Add tooltip:
+
+Zoom out
+Reset zoom
+Zoom in
+
+Keyboard shortcuts:
+
+Ctrl/Cmd + Minus:
+game zoom out
+
+Ctrl/Cmd + Plus:
+game zoom in
+
+Ctrl/Cmd + 0:
+reset game zoom
+
+Prevent browser zoom only while the game page is focused if this can be done safely and without harming accessibility.
+
+Persist zoom preference in localStorage.
+
+Example:
+
+splendor-ui-zoom = 1.10
+
+RESPONSIVE BEHAVIOR
+
+Zoom should work together with the responsive layout.
+
+Do not replace responsive layout with zoom.
+
+The priority is:
+
+responsive layout determines the safe base size
+
+then
+
+user zoom modifies that size inside safe limits.
+
+On ultrawide displays:
+allow larger zoom.
+
+On short displays:
+restrict maximum zoom.
+
+VISUAL TARGET
+
+100%:
+current recommended balanced layout.
+
+110%:
+larger artwork and easier reading.
+
+120%:
+large-card mode for users who prioritize artwork visibility.
+
+85–90%:
+compact mode for smaller screens or users who want more overview.
+
+The change should animate smoothly over approximately 150–200ms.
+
+Do not animate using transform scale.
+
+Transition actual layout dimensions and gaps subtly.
+
+Test at:
+
+1366×768
+1600×900
+1920×1080
+2560×1080
+2560×1440
+3440×1440
+3840×2160
+
+Test every zoom level.
+
+The game must remain fully usable at all safe combinations.

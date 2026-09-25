@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07101e" />
+  <title>Splenwibu — Premium Table</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <header class="topbar glass">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div><strong>SPLENWIBU</strong><span>Anime Gemcraft</span></div>
+    </div>
+    <div class="room-pill"><span>ROOM</span><strong>AKI-782</strong><button data-copy aria-label="Copy room code">⧉</button></div>
+    <div class="turn-summary"><i></i><span>YOUR TURN</span><small>01:18</small></div>
+    <div class="top-actions">
+      <div class="player-count" aria-label="Preview player count">
+        <button data-players="2">2P</button><button class="active" data-players="3">3P</button><button data-players="4">4P</button>
+      </div>
+      <div class="zoom-control" aria-label="Gameplay zoom">
+        <button data-zoom-out title="Zoom out" aria-label="Zoom out">−</button>
+        <button class="zoom-value" data-zoom-reset title="Reset zoom" aria-label="Reset gameplay zoom">100%</button>
+        <button data-zoom-in title="Zoom in" aria-label="Zoom in">+</button>
+      </div>
+      <button class="icon-btn" data-sound aria-label="Sound">♪</button>
+      <button class="icon-btn" data-rules aria-label="Rules">?</button>
+      <button class="icon-btn" data-settings aria-label="Settings">⚙</button>
+      <button class="icon-btn history-trigger" data-history aria-label="Game history">≡<span class="notification-dot"></span></button>
+    </div>
+  </header>
+
+  <main class="game-shell players-3" id="gameShell">
+    <section class="player-seat seat-top glass" data-player="2"></section>
+    <section class="player-seat seat-left glass" data-player="1"></section>
+    <section class="player-seat seat-right glass" data-player="3"></section>
+
+    <section class="table-surface" aria-label="Game table">
+      <div class="table-heading">
+        <div><span class="eyebrow">THE GRAND ATELIER</span><strong>Market</strong></div>
+        <div class="round"><span>ROUND 7</span><i></i><span>TURN 18</span></div>
+      </div>
+
+      <div class="noble-row board-row" id="nobleRow">
+        <div class="row-label noble-label"><span>♢</span><b>NOBLES</b></div>
+        <div class="noble-list" id="nobleList"></div>
+      </div>
+
+      <div class="market" id="market"></div>
+
+      <section class="gem-bank glass" aria-label="Gem bank">
+        <div class="bank-title"><span>GEM BANK</span><small>Choose gems directly</small></div>
+        <div class="gem-list" id="gemList"></div>
+        <div class="selection" id="selection">
+          <div><small>SELECTED</small><span id="selectedText">Choose up to 3 colors</span></div>
+          <button id="confirmGems" disabled>CONFIRM</button>
+        </div>
+      </section>
+    </section>
+
+    <section class="local-player glass" id="localPlayer"></section>
+  </main>
+
+  <aside class="history-panel glass" id="historyPanel" aria-hidden="true">
+    <div class="history-head"><div><small>MATCH LOG</small><h2>Game History</h2></div><button data-close-history>×</button></div>
+    <div class="history-list" id="historyList"></div>
+  </aside>
+
+  <div class="focus-layer" id="focusLayer" aria-hidden="true">
+    <button class="focus-close" data-close-focus aria-label="Close">×</button>
+    <div id="focusCard"></div>
+    <section class="action-panel glass" id="actionPanel"></section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="ceremony-layer" id="ceremonyLayer" aria-hidden="true">
+    <div class="ceremony-card" id="ceremonyCard"></div>
+    <span>NOBLE VISIT</span><strong>+3 PRESTIGE</strong>
+  </div>
+
+  <div class="victory-layer" id="victoryLayer" aria-hidden="true">
+    <section class="victory-panel glass">
+      <span class="victory-kicker">MATCH COMPLETE</span>
+      <h1>VICTORY</h1>
+      <img src="Asset_Raw/Tier 2/050_Ganyu.png" alt="Winner avatar">
+      <h2>You</h2>
+      <div class="victory-stats"><div><strong id="victoryVp">15</strong><small>PRESTIGE</small></div><div><strong id="victoryCards">12</strong><small>CARDS</small></div><div><strong id="victoryNobles">1</strong><small>NOBLES</small></div></div>
+      <p id="victoryReason">Highest prestige wins the match.</p>
+      <div class="victory-actions"><button data-play-again>PLAY AGAIN</button><button data-back-room>BACK TO ROOM</button></div>
+    </section>
+  </div>
+
+  <template id="cardTemplate">
+    <article class="dev-card" tabindex="0">
+      <div class="card-glow"></div>
+      <img class="character-art" alt="" />
+      <div class="affordable-check">✓</div>
+      <div class="card-tooltip glass"></div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>

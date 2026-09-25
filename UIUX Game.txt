@@ -1,0 +1,586 @@
+Redesign the existing online Splendor-style anime board game UI into a premium desktop-first interface.
+
+IMPORTANT:
+- The game logic already works.
+- Existing card assets already exist.
+- Do NOT regenerate or replace card artwork.
+- Focus on UI/UX, layout, responsiveness, interaction, readability and animation.
+- Support 2, 3 and 4 players.
+- Primary target: PC, especially 1920×1080.
+- The full game board must fit on screen without vertical scrolling at 1920×1080.
+- Do NOT globally scale the entire UI using transform: scale().
+
+GOAL
+
+Make the game feel like a polished premium PC digital board game, not a normal website.
+
+Priorities:
+1. Character artwork must be large and easy to see.
+2. Card cost, prestige and permanent bonus must be readable instantly.
+3. Nobles must be clearly visible and larger than before.
+4. Player information must be compact.
+5. Gameplay interactions must require as few clicks as possible.
+6. UI should remain clean and balanced for 2, 3 and 4 players.
+
+VISUAL STYLE
+
+Use:
+- dark navy / charcoal background
+- subtle glass panels
+- very light borders
+- soft shadows
+- restrained glow
+- premium fantasy / luxury tabletop feeling
+- bronze accent for Tier I
+- silver accent for Tier II
+- gold accent for Tier III
+- platinum / diamond accent for Nobles
+
+The anime artwork must remain the strongest visual element.
+
+Avoid:
+- large black opaque panels
+- thick borders
+- excessive blur
+- excessive neon
+- oversized labels
+- unnecessary sidebars
+- UI elements that cover character faces
+
+DESKTOP LAYOUT
+
+Keep the board centered.
+
+Main board:
+
+NOBLES
+
+III   [CARD] [CARD] [CARD] [CARD]
+
+II    [CARD] [CARD] [CARD] [CARD]
+
+I     [CARD] [CARD] [CARD] [CARD]
+
+The main board must remain the visual center.
+
+Recommended development card size at 1920×1080:
+
+width: approximately 150–165px
+height: approximately 195–210px
+
+Do not shrink cards aggressively.
+
+Character artwork should occupy approximately 75–82% of each development card.
+
+NOBLES
+
+Make Nobles significantly larger and easier to read.
+
+Recommended size:
+130–150px square.
+
+Number displayed:
+- 2 players = 3 Nobles
+- 3 players = 4 Nobles
+- 4 players = 5 Nobles
+
+Place Nobles directly above Tier III.
+
+PLAYER LAYOUT
+
+2 PLAYERS
+
+Use a spacious layout.
+
+Place opponent above or to one side of the board.
+
+Local player always stays at the bottom.
+
+Use the extra space to slightly enlarge cards and Nobles.
+
+Concept:
+
+              OPPONENT
+
+               NOBLES
+
+                BOARD
+
+              GEM BANK
+
+                 YOU
+
+
+3 PLAYERS
+
+Use a balanced left/right layout:
+
+PLAYER 2                  PLAYER 3
+
+               NOBLES
+
+                BOARD
+
+              GEM BANK
+
+                 YOU
+
+Player 2 on the left.
+Player 3 on the right.
+Local player at the bottom.
+
+Do not stack both opponents on one side.
+
+
+4 PLAYERS
+
+Use a physical-table layout:
+
+               PLAYER 3
+
+PLAYER 2        BOARD        PLAYER 4
+
+                 YOU
+
+Player 3 appears above the board.
+
+Player 2 appears on the left.
+
+Player 4 appears on the right.
+
+Local player remains at the bottom.
+
+This layout should visually feel like four players sitting around a table.
+
+PLAYER PANELS
+
+Opponent panels must remain compact.
+
+Show only:
+
+- avatar
+- player name
+- prestige points
+- five permanent bonus counts
+- total token count
+- number of reserved cards
+- connection state
+
+Do NOT show every owned development card.
+
+More details appear on hover.
+
+Example compact opponent panel:
+
+Linh                  11 VP
+
+White 3   Blue 2   Green 4
+Red 1     Black 0
+
+Tokens: 6
+Reserved: 2
+
+The active player's panel receives a subtle glow or outline.
+
+LOCAL PLAYER AREA
+
+The local player area can be larger.
+
+Display:
+
+- prestige points
+- permanent bonuses
+- actual token counts
+- reserved cards
+- current action state
+- turn indicator
+
+Reserved cards should be displayed as small thumbnails:
+
+[Card] [Card] [Empty]
+
+Recommended thumbnail size:
+approximately 70×95px
+
+Hovering a reserved card should preview it at normal card size.
+
+TURN INDICATOR
+
+The active player must be immediately obvious.
+
+Use:
+
+- glowing avatar ring
+- subtle panel border
+- small animated dot
+- small text such as YOUR TURN
+
+Do not use large modal notifications for normal turns.
+
+GEM BANK
+
+Redesign the gem bank into a compact visual rack.
+
+Do not use a boring long vertical list.
+
+Example layout:
+
+       GEM BANK
+
+White      Blue      Green
+  4          4          4
+
+Red        Black      Gold
+ 4           4          5
+
+Each gem should have:
+
+- gem icon
+- remaining count
+- hover feedback
+- click interaction
+
+Recommended interactive gem size:
+48–56px
+
+TAKE GEMS UX
+
+Players should select gems directly from the bank.
+
+On click:
+- move the selected gem upward 6–8px
+- add a subtle selected ring
+- animate with a small spring effect
+
+Click again to deselect.
+
+Show selection below:
+
+Selected:
+White ×1
+Blue ×1
+Black ×1
+
+[Confirm]
+
+The Confirm button remains disabled until the move is legal.
+
+Do not open a modal just to take gems.
+
+CARD HOVER
+
+On hover:
+
+scale card to approximately 1.10–1.15
+
+translate upward slightly
+
+increase shadow/elevation
+
+Do not move neighboring cards.
+
+Use approximately 160–200ms transitions.
+
+Add very subtle 2–3 degree cursor-based parallax.
+
+After a short delay, show a tooltip containing:
+
+- character name
+- tier
+- prestige
+- permanent bonus
+- original cost
+- actual cost after player's permanent bonuses
+
+Example:
+
+Original cost:
+White 4
+Red 3
+Black 2
+
+You pay:
+White 1
+Red 2
+Black 0
+
+The game should calculate this automatically.
+
+AFFORDABLE CARDS
+
+Do not cover the card with a large green overlay.
+
+Use only:
+
+- subtle gold outline
+- tiny check icon
+- soft glow
+
+Cards the player cannot afford should still show full artwork.
+
+Only insufficient cost values should visually indicate that resources are missing.
+
+CARD PURCHASE FLOW
+
+Clicking a development card must NOT immediately purchase it.
+
+After click:
+
+1. Slightly darken the rest of the board.
+2. Enlarge the selected card.
+3. Open a compact purchase panel beside the card.
+
+Panel must show:
+
+BUY CARD
+
+Cost after bonuses
+
+Available player tokens
+
+Gold joker tokens
+
+Selected payment
+
+Buttons:
+
+AUTO PAY
+CANCEL
+BUY
+
+The player must be allowed to manually choose which tokens are used.
+
+Click individual tokens to select or remove them from payment.
+
+Gold tokens can substitute missing colors.
+
+AUTO PAY should choose a valid payment automatically.
+
+BUY becomes active only when payment is valid.
+
+PURCHASE ANIMATION
+
+After Buy:
+
+1. Paid tokens animate from player area to the gem bank.
+
+2. Purchased card slightly shrinks and flies toward the player's permanent bonus area.
+
+3. The permanent bonus counter increases with a short pulse animation.
+
+4. A new development card enters the empty slot with a short fade/slide animation.
+
+Total normal purchase animation:
+approximately 500–700ms.
+
+Do not use long cinematic animations during every turn.
+
+RESERVE CARD
+
+When selecting a card, provide:
+
+BUY
+RESERVE
+CANCEL
+
+If Reserve is selected:
+
+Animate the card toward the local player's reserved area.
+
+If a Gold token is awarded:
+
+Animate Gold from the bank to the player.
+
+NOBLE VISIT
+
+When a Noble is gained:
+
+- slightly darken the background
+- enlarge the Noble in the center
+- show:
+
+NOBLE VISIT
++3 PRESTIGE
+
+Then animate the Noble toward that player's panel.
+
+Do not require an unnecessary OK button.
+
+If several Nobles are eligible, allow the player to choose one.
+
+GAME HISTORY
+
+Do not permanently occupy a large sidebar with logs.
+
+Use a compact History button.
+
+Click opens a slide-over panel from the right.
+
+Example:
+
+Linh bought Yor Forger.
+Nam took White, Blue and Black.
+Minh reserved Makima.
+Lan received a Noble.
+
+TOP BAR
+
+Keep the top bar compact.
+
+Show:
+
+- logo
+- room code
+- current player
+- optional timer
+- sound icon
+- rules icon
+- settings icon
+
+Prefer icons instead of large labels such as:
+
+RULES
+SETTINGS
+SOUND
+
+CARD TIER LABELS
+
+Do not use large text such as:
+
+TIER III
+TIER II
+TIER I
+
+Use compact row indicators:
+
+III
+II
+I
+
+Tier visual accents:
+
+Tier I = bronze
+Tier II = silver
+Tier III = gold
+Noble = platinum / diamond
+
+RESPONSIVE BEHAVIOR
+
+Target resolutions:
+
+1366×768
+1600×900
+1920×1080
+2560×1440
+4K
+
+At 1920×1080:
+the entire board must fit without vertical scrolling.
+
+When available screen space decreases, reduce things in this order:
+
+1. outer margins
+2. gaps
+3. opponent panel width
+4. top bar height
+5. secondary labels
+6. Noble size slightly
+7. development card size LAST
+
+Do not globally shrink the complete interface.
+
+Use:
+
+CSS Grid
+Flexbox
+clamp()
+min()
+max()
+minmax()
+
+Avoid:
+transform: scale() on the whole game board.
+
+For larger monitors, do not endlessly enlarge the UI.
+
+Use a centered max-width game container.
+
+MICROINTERACTIONS
+
+Add subtle premium interactions:
+
+- 2–3 degree card hover parallax
+- gem spring selection
+- animated prestige counters
+- bonus counter pulse
+- Noble shimmer
+- new card fade / slide
+- active player border transition
+- button press feedback
+- short hover animations
+- token movement animations
+
+Keep most interactions between approximately 150–700ms.
+
+Avoid normal gameplay animations longer than 1 second.
+
+WIN SCREEN
+
+Create a premium victory overlay.
+
+Blur or darken the board behind it.
+
+Display:
+
+VICTORY
+
+winner avatar
+winner name
+prestige points
+development cards owned
+Nobles owned
+
+Buttons:
+
+PLAY AGAIN
+BACK TO ROOM
+
+If scores are tied, use the normal Splendor tiebreak logic and clearly show why that player won.
+
+COMPONENT ARCHITECTURE
+
+Refactor UI into reusable components where appropriate:
+
+<GameTable />
+<PlayerSeat />
+<DevelopmentCard />
+<NobleCard />
+<GemBank />
+<ActionPanel />
+<GameHistory />
+<TurnIndicator />
+<ReservedCards />
+
+GameTable should accept:
+
+playerCount = 2 | 3 | 4
+
+and automatically use the correct seat layout.
+
+Do not create three completely duplicated game screens for 2, 3 and 4 players.
+
+IMPORTANT FINAL REQUIREMENTS
+
+Preserve all existing game logic and existing card assets.
+
+Prioritize:
+
+1. character artwork visibility
+2. card readability
+3. large readable Nobles
+4. compact player information
+5. fast actions
+6. no screen scrolling on FHD
+7. premium PC game feeling
+
+The final result should feel like a polished digital tabletop/card game client, not a website containing a board game.

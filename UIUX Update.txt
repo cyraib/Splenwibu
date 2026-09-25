@@ -1,0 +1,628 @@
+Improve the CURRENT existing Splendor-style anime game UI shown in the current project.
+
+IMPORTANT:
+- Do NOT redesign from scratch.
+- Preserve current visual identity, game logic, routes, networking, card assets, card data and gameplay behavior.
+- Treat the current UI as the baseline and refine it.
+- The main problem is that the central game board is too small relative to the available desktop screen, while there is too much unused empty space around it.
+- Character artwork, Nobles, card costs and gameplay information must become easier to see.
+- The result must work well across MULTIPLE desktop resolutions and aspect ratios, not only one screenshot.
+
+PRIMARY GOAL
+
+Improve screen-space usage while keeping the interface elegant and premium.
+
+The UI must:
+- fit entirely on screen without vertical scrolling during gameplay;
+- remain readable on smaller desktop screens;
+- take advantage of larger screens without creating huge empty margins;
+- preserve the current dark premium visual style;
+- keep the anime character artwork as the main visual focus.
+
+SUPPORTED RESOLUTIONS
+
+Explicitly test and optimize for:
+
+1366×768
+1440×900
+1600×900
+1920×1080
+1920×1200
+2560×1080 ultrawide
+2560×1440
+3440×1440 ultrawide
+3840×2160
+
+Also handle arbitrary intermediate desktop viewport sizes gracefully.
+
+Do NOT hardcode the layout specifically for 1920×1080.
+
+RESPONSIVE STRATEGY
+
+Do NOT globally scale the application using:
+
+transform: scale(...)
+zoom: ...
+fixed design canvas scaling
+
+Instead use real responsive layout techniques:
+
+CSS Grid
+Flexbox
+clamp()
+min()
+max()
+minmax()
+vw
+vh
+dvh
+aspect-ratio
+container queries where useful
+media queries only where necessary
+
+Create a fluid sizing system based on both viewport width AND viewport height.
+
+Height is especially important because gameplay must fit without scrolling.
+
+CENTRAL BOARD
+
+The current board is visually too small.
+
+Increase its usable scale substantially.
+
+Target approximately:
+- +25% to +30% card size on a typical 1920×1080 screen compared with the current implementation;
+- +35% to +40% Noble size compared with the current implementation.
+
+However, do NOT apply a fixed 1.3× transform.
+
+Instead calculate sizes responsively.
+
+Recommended starting concept:
+
+development card width:
+
+clamp(92px, min(8vw, 15.5vh), 165px)
+
+development card height should follow the existing card aspect ratio.
+
+Use aspect-ratio rather than independent hardcoded width and height if possible.
+
+For example:
+
+.card {
+  width: clamp(...);
+  aspect-ratio: existing-card-ratio;
+}
+
+The exact clamp values may be adjusted after visually testing all target resolutions.
+
+The four development cards in each row must always fit horizontally.
+
+NOBLES
+
+Nobles are currently too small.
+
+Increase their visual priority.
+
+Recommended responsive target:
+
+noble width:
+clamp(86px, min(7vw, 13vh), 150px)
+
+Maintain the original Noble aspect ratio.
+
+Requirements and Prestige information must remain legible.
+
+Nobles should feel like important objectives, not tiny thumbnails.
+
+BOARD DENSITY
+
+Reduce excessive empty padding inside the large central board container.
+
+The current outer rounded board panel has too much unused space.
+
+Either:
+
+OPTION A:
+reduce its internal padding by approximately 40–50%;
+
+OR
+
+OPTION B:
+remove the large enclosing panel entirely and allow the market to float directly on the dark game-table background with only a subtle vignette / glow behind it.
+
+Choose whichever integrates better with the existing design.
+
+The board should visually occupy significantly more of the center area.
+
+DESKTOP BOARD LAYOUT
+
+Maintain:
+
+NOBLES
+
+III  [CARD] [CARD] [CARD] [CARD]
+
+II   [CARD] [CARD] [CARD] [CARD]
+
+I    [CARD] [CARD] [CARD] [CARD]
+
+GEM BANK
+
+Use responsive gaps.
+
+Example strategy:
+
+gap:
+clamp(6px, 0.6vw, 14px)
+
+Vertical row gaps:
+clamp(5px, 0.8vh, 12px)
+
+Do not waste space with very large margins.
+
+SIDE PLAYERS
+
+The left and right opponent panels are currently too far from the board.
+
+Move them visually closer to the central market.
+
+Their distance should respond to viewport width.
+
+On standard 16:9 screens:
+
+Opponent — small gap — BOARD — small gap — Opponent
+
+Do not place players near the extreme edges when unnecessary.
+
+Use something similar to:
+
+grid-template-columns:
+minmax(160px, 0.75fr)
+minmax(640px, 1.6fr)
+minmax(160px, 0.75fr)
+
+but derive final values from the existing implementation.
+
+Use a max board/player separation rather than allowing giant gaps on wide displays.
+
+Example concept:
+
+column-gap: clamp(16px, 2vw, 48px)
+
+Do not allow the side-player distance from the board to grow endlessly on ultrawide displays.
+
+PLAYER PANELS
+
+Preserve the current compact visual design.
+
+Do not make opponent panels much larger.
+
+Instead:
+- make important numbers slightly easier to read;
+- move panels closer to the board;
+- improve information hierarchy.
+
+Show:
+- avatar
+- player name
+- Prestige
+- permanent bonuses
+- token count
+- reserved count
+- connection state
+
+Do not display unnecessary information permanently.
+
+LOCAL PLAYER HUD
+
+The bottom local-player bar is currently too wide and sparse.
+
+Compact it.
+
+Currently there is too much empty horizontal space between:
+- identity / Prestige
+- resources
+- reserved cards
+
+Reorganize the content into meaningful clusters.
+
+Preferred conceptual structure:
+
+[ Avatar + YOU + Turn ]
+[ Prestige ]
+[ Permanent Bonuses ]
+[ Tokens ]
+[ Reserved cards ]
+
+Do not stretch these groups unnecessarily across the entire screen.
+
+Use a centered or max-width HUD.
+
+Example:
+
+width: min(calc(100vw - 32px), 1500px);
+
+But adapt this to the existing project.
+
+On larger resolutions, keep the HUD compact rather than making it proportionally huge.
+
+GEM BANK
+
+Increase its visual size by approximately 15–20% on normal FHD compared with the current version.
+
+It currently looks too much like a tiny toolbar.
+
+Gem controls should feel like interactive game pieces.
+
+Use responsive token/button sizing, such as:
+
+clamp(32px, min(3vw, 5vh), 52px)
+
+Keep the bank compact enough to fit below the board.
+
+Gem bank must never force the page to scroll.
+
+CARD INFORMATION
+
+Increase readability of gameplay-critical card information.
+
+Relative to the current card design:
+
+- cost icons / numbers: +15–20% on FHD
+- permanent bonus icon: +10–15%
+- Prestige number: +10–15%
+
+Do not enlarge the character name excessively.
+
+Character artwork must remain dominant.
+
+Do not place large opaque UI blocks over faces.
+
+CARD HOVER
+
+Retain or improve hover interaction.
+
+On hover:
+
+scale approximately 1.08–1.12
+translateY approximately -6px to -10px
+increase z-index
+increase shadow
+
+Do not affect surrounding card positions.
+
+For small desktop resolutions where large hover scale would leave the viewport:
+dynamically reduce the hover scale.
+
+For example:
+- large screens: 1.12
+- small screens: 1.07
+
+Ensure hovered cards are never clipped by parent overflow.
+
+AFFORDABLE CARD STATE
+
+Keep artwork fully visible.
+
+Do NOT darken unavailable cards significantly.
+
+Purchasable cards:
+- very subtle gold outline
+- subtle glow
+- optional small check indicator
+
+Missing costs:
+visually emphasize only the missing resource values.
+
+RESPONSIVE HEIGHT MANAGEMENT
+
+This is critical.
+
+Calculate the available game height from:
+
+viewport height
+minus top bar
+minus bottom local player HUD
+minus small safe margins
+
+The central board must fit into this available height.
+
+Avoid fixed heights that cause overflow.
+
+Use:
+height: 100dvh
+
+for the root gameplay view where appropriate.
+
+Suggested structure:
+
+.game-screen {
+  height: 100dvh;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows:
+    auto
+    minmax(0, 1fr)
+    auto;
+}
+
+The central stage should use:
+
+min-height: 0;
+overflow: visible where card hover requires it.
+
+The page itself should not scroll during active gameplay.
+
+RESPONSIVE BREAKPOINT BEHAVIOR
+
+Do not merely shrink everything equally.
+
+Use these priorities.
+
+WHEN VIEWPORT GETS SMALLER:
+
+First reduce:
+1. outer margins
+2. horizontal gaps
+3. vertical gaps
+4. side-player distance
+5. top bar padding
+6. secondary labels
+
+Then slightly reduce:
+7. opponent panel dimensions
+8. Noble size
+
+Reduce development card size LAST.
+
+The market cards are the most important gameplay content.
+
+For approximately 1366×768:
+- keep cards readable;
+- make UI denser;
+- use tighter gaps;
+- shorten top/bottom bars;
+- reduce decorative spacing;
+- hide low-priority text labels if required.
+
+Do not hide gameplay-critical values.
+
+LARGE DISPLAY BEHAVIOR
+
+For 2560×1440 and 4K:
+
+Do NOT simply scale the entire interface proportionally.
+
+Increase cards and Nobles moderately up to their max clamp values.
+
+Then stop growing.
+
+Use max-width limits around the gameplay area.
+
+Example conceptual maximum stage width:
+approximately 1750–2000px.
+
+The surrounding background may expand on very large screens.
+
+This prevents the board becoming absurdly large on 4K.
+
+ULTRAWIDE SUPPORT
+
+For 2560×1080 and 3440×1440:
+
+Do NOT push the side players to the far left/right edges.
+
+Keep the interactive gameplay cluster centered.
+
+Use a maximum layout width.
+
+The additional horizontal area should become background breathing room, not huge functional gaps.
+
+Example:
+
+.game-stage {
+  width: min(100% - 32px, 1900px);
+  margin-inline: auto;
+}
+
+Adjust final values based on visual testing.
+
+2 / 3 / 4 PLAYER SUPPORT
+
+The responsive system must work with every supported player count.
+
+2 PLAYERS
+
+Use the extra available room to enlarge the market slightly.
+
+Do not leave giant empty regions.
+
+Opponent can appear above or near one side depending on the current project's layout system.
+
+3 PLAYERS
+
+Maintain balanced positioning around the central market.
+
+4 PLAYERS
+
+Keep the existing tabletop concept:
+
+                 Player 3
+
+Player 2          BOARD          Player 4
+
+                   YOU
+
+For all player counts:
+the board must remain centered and be the dominant visual element.
+
+TOP BAR
+
+Keep it compact.
+
+At smaller heights:
+reduce vertical padding before shrinking gameplay cards.
+
+Do not let the top navigation consume excessive vertical space.
+
+Use responsive height such as:
+
+clamp(40px, 5vh, 54px)
+
+if compatible with the current UI.
+
+Do not make icons excessively small.
+
+TYPOGRAPHY
+
+Use responsive font sizing.
+
+Gameplay-critical numbers must remain readable.
+
+Examples:
+
+card Prestige:
+clamp(14px, 1.15vw, 22px)
+
+small metadata:
+clamp(9px, 0.65vw, 13px)
+
+player score:
+clamp(15px, 1.1vw, 22px)
+
+Do not blindly use vw for every font.
+
+Use clamp with safe minimum and maximum values.
+
+VISUAL CONTRAST
+
+Keep the existing dark navy palette.
+
+However, improve separation between:
+
+page background
+board surfaces
+interactive controls
+
+The current UI has many dark-on-dark surfaces.
+
+Increase contrast subtly.
+
+Do not introduce bright large panels.
+
+Keep the premium minimal appearance.
+
+TIER LABELS
+
+Keep the current compact:
+
+III
+II
+I
+
+Do not change back to large labels like "TIER III".
+
+You may improve the small horizontal indicator line and spacing.
+
+ANIMATIONS
+
+Preserve existing animations where possible.
+
+Keep interactions responsive.
+
+Normal UI:
+120–250ms
+
+Card purchase / token movement:
+300–700ms
+
+Avoid animations that significantly affect responsive measurements.
+
+Do not animate layout width/height continuously during window resizing.
+
+IMPLEMENTATION REQUIREMENTS
+
+Before changing code:
+
+1. Inspect the existing frontend layout and component structure.
+2. Identify the root game screen, market/board, player panels, Noble row, card component, Gem Bank and local HUD.
+3. Reuse existing components.
+4. Avoid unnecessary rewrites.
+5. Preserve all existing behavior.
+
+Create centralized responsive sizing variables/tokens where practical.
+
+For example:
+
+:root {
+  --game-gap-xs: ...;
+  --game-gap-sm: ...;
+  --card-width: ...;
+  --noble-size: ...;
+  --player-panel-width: ...;
+}
+
+Prefer a coherent sizing system rather than many unrelated magic numbers.
+
+TESTING
+
+After implementing, manually inspect the layout at all of these viewport sizes:
+
+1366×768
+1440×900
+1600×900
+1920×1080
+1920×1200
+2560×1080
+2560×1440
+3440×1440
+3840×2160
+
+For every resolution verify:
+
+- no page scroll during gameplay
+- all 12 market cards visible
+- all Nobles visible
+- Gem Bank visible
+- local player HUD visible
+- no overlap between player panels and cards
+- hover card does not get clipped
+- text remains readable
+- artwork remains clearly visible
+- board remains visually centered
+- side players do not become extremely far away
+- no excessive unused space
+- no UI is cut off
+
+Also test 2, 3 and 4 player variants.
+
+If screenshots or browser automation are available, compare each resolution visually and adjust responsive values until the layout feels balanced.
+
+MOST IMPORTANT CHANGES FROM THE CURRENT UI
+
+1. Make the market approximately 25–30% visually larger on FHD.
+2. Make Nobles approximately 35–40% visually larger on FHD.
+3. Move left/right opponent panels closer to the market.
+4. Reduce the huge empty padding around the central board.
+5. Make Gem Bank approximately 15–20% larger.
+6. Compact the bottom player HUD and remove unnecessary empty space.
+7. Increase readability of card costs, Prestige and permanent-bonus indicators.
+8. Preserve the current premium dark visual identity.
+9. Make all sizing fluid across resolutions rather than optimized for a single screenshot.
+10. Do not break existing game logic or assets.
+
+FINAL QUALITY TARGET
+
+At 1920×1080, the screen should immediately feel fuller and easier to read than the current implementation.
+
+At 1366×768, it should feel compact but remain fully playable.
+
+At 1440p and 4K, it should feel premium and spacious without making gameplay elements absurdly large.
+
+On ultrawide screens, the gameplay cluster should remain centered instead of stretching across the full viewport.
+
+The character art should be noticeably easier to see at every normal desktop resolution.
+
+Do not consider the task complete until the responsive behavior has been visually checked at all specified viewport sizes.
